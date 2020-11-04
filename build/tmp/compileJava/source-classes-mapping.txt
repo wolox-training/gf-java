@@ -1,0 +1,2 @@
+com/wolox/training/TrainingApplication.java
+ com.wolox.training.TrainingApplication
