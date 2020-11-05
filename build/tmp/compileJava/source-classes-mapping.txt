@@ -1,2 +1,4 @@
+com/wolox/training/controllers/BookController.java
+ com.wolox.training.controllers.BookController
 com/wolox/training/TrainingApplication.java
  com.wolox.training.TrainingApplication
