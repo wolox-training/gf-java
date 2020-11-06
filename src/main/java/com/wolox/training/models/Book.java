@@ -65,6 +65,10 @@ public class Book {
         this.isbn = isbn;
     }
 
+    public long getId(){
+        return this.id;
+    }
+
     public String getGenre() {
         return genre;
     }
