@@ -10,6 +10,8 @@ com/wolox/training/exceptions/RestExceptionHandler.java
  com.wolox.training.exceptions.RestExceptionHandler
 com/wolox/training/models/Book.java
  com.wolox.training.models.Book
+com/wolox/training/repositories/UserRepository.java
+ com.wolox.training.repositories.UserRepository
 com/wolox/training/models/User.java
  com.wolox.training.models.User
 com/wolox/training/controllers/BookController.java
