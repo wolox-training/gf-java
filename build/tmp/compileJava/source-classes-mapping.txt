@@ -1,4 +1,11 @@
+<<<<<<< HEAD
+=======
+com/wolox/training/models/Book.java
+ com.wolox.training.models.Book
+>>>>>>> gf-branch
 com/wolox/training/controllers/BookController.java
  com.wolox.training.controllers.BookController
 com/wolox/training/TrainingApplication.java
  com.wolox.training.TrainingApplication
+com/wolox/training/repositories/BookRepository.java
+ com.wolox.training.repositories.BookRepository
