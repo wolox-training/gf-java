@@ -51,7 +51,7 @@ public class BookController {
      * @return the book with the id passed as parameter
      */
     @GetMapping("/{id}")
-    public Book findOne(@PathVariable Long id){
+    public Book findOne(@PathVariable Long id) throws NotFoundException {
         return bookRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
@@ -61,7 +61,7 @@ public class BookController {
      * @return the book with the id passed as parameter
      */
     @GetMapping("/author/{authorName}")
-    public Book findByAuthor(@PathVariable String authorName){
+    public Book findByAuthor(@PathVariable String authorName) throws NotFoundException {
         return bookRepository.findByAuthor(authorName).orElseThrow(NotFoundException::new);
     }
 
@@ -81,7 +81,7 @@ public class BookController {
      * @param id: Id of the Book to be deleted (Long)
      */
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws NotFoundException {
         bookRepository.findById(id).orElseThrow(NotFoundException::new);
         bookRepository.deleteById(id);
     }
@@ -95,7 +95,7 @@ public class BookController {
      * @return the updated Book in the database
      */
     @PutMapping("/{id}")
-    public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
+    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws IdMismatchException, NotFoundException {
         if (book.getId() != id) {
             throw new IdMismatchException();
         }
