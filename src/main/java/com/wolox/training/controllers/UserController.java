@@ -27,12 +27,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findOne(@PathVariable Long id){
+    public User findOne(@PathVariable Long id) throws NotFoundException {
         return userRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @GetMapping("/username/{username}")
-    public User findByUsername(@PathVariable String username){
+    public User findByUsername(@PathVariable String username) throws NotFoundException {
         return userRepository.findByUsername(username).orElseThrow(NotFoundException::new);
     }
 
@@ -43,13 +43,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws NotFoundException {
         userRepository.findById(id).orElseThrow(NotFoundException::new);
         userRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable Long id) {
+    public User updateUser(@RequestBody User user, @PathVariable Long id) throws IdMismatchException, NotFoundException {
         if (user.getId() != id) {
             throw new IdMismatchException();
         }
@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/{bookId}")
-    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws BookAlreadyOwnedException {
+    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws BookAlreadyOwnedException, NotFoundException {
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(NotFoundException::new);
         user.addBook(book);
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}/{bookId}")
-    public User removeBookToUser(@PathVariable Long userId, @PathVariable Long bookId) {
+    public User removeBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws NotFoundException {
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(NotFoundException::new);
         user.removeBook(book);
