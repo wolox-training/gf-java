@@ -1,2 +1,0 @@
-com/wolox/training/TrainingApplicationTests.java
- com.wolox.training.TrainingApplicationTests
