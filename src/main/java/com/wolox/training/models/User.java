@@ -3,16 +3,18 @@ package com.wolox.training.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wolox.training.exceptions.BookAlreadyOwnedException;
 import com.wolox.training.exceptions.NotFoundException;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Entity(name = "Users")
+@ApiModel(description = "Users")
 public class User {
 
     @Id
@@ -20,16 +22,20 @@ public class User {
     private long id;
 
     @NotNull
+    @ApiModelProperty(notes = "The username")
     private String username;
 
     @NotNull
+    @ApiModelProperty(notes = "The name of a user")
     private String name;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     @NotNull
+    @ApiModelProperty(notes = "The birthdate of a user")
     private LocalDate birthdate;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @ApiModelProperty(notes = "The list of books owned by a user")
     private List<Book> books = new ArrayList<>();
 
     public User(){

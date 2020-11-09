@@ -2,6 +2,8 @@ package com.wolox.training.models;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +15,7 @@ import javax.validation.constraints.NotNull;
  * @version 1.0
  */
 @Entity
+@ApiModel(description = "Books")
 public class Book {
 
     /**
@@ -27,6 +30,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The book genre: could be horror, comedy, drama, etc.")
     private String genre;
 
     /**
@@ -34,6 +38,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The book author")
     private String author;
 
     /**
@@ -41,6 +46,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The cover image of a Book")
     private String image;
 
     /**
@@ -48,6 +54,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The book title")
     private String title;
 
     /**
@@ -55,6 +62,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The book subtitle")
     private String subtitle;
 
     /**
@@ -62,6 +70,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The publisher of a book")
     private String publisher;
 
     /**
@@ -69,6 +78,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The year of publication of a book")
     private String year;
 
     /**
@@ -76,6 +86,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The number of pages in the book")
     private Integer pages;
 
     /**
@@ -83,6 +94,7 @@ public class Book {
      */
     @Column
     @NotNull
+    @ApiModelProperty(notes = "The book ISBN")
     private String isbn;
 
     public Book() {
