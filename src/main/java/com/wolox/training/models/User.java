@@ -90,18 +90,27 @@ public class User {
     }
 
     public void addBook(Book book) throws BookAlreadyOwnedException {
+<<<<<<< HEAD
         Preconditions.checkNotNull(book, "The book can not be null");
         if(this.books.contains(book)){
+=======
+        if(books.contains(book)){
+>>>>>>> feature/swagger
             throw new BookAlreadyOwnedException("The User already owns the Book");
         }
-        this.books.add(book);
+        books.add(book);
     }
 
+<<<<<<< HEAD
     public void removeBook(Book book) {
         Preconditions.checkNotNull(book, "The book can not be null");
         if(!(this.books.contains(book))){
+=======
+    public void removeBook(Book book) throws NotFoundException {
+        if(!books.contains(book)){
+>>>>>>> feature/swagger
             throw new NotFoundException("The User has not the Book you try to remove");
         }
-        this.books.remove(book);
+        books.remove(book);
     }
 }

@@ -46,12 +46,16 @@ public class BookController {
      * @return the book with the id passed as parameter
      */
     @GetMapping("/{id}")
+<<<<<<< HEAD
     @ApiOperation(value = "Giving an Id, return the book", response = Book.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
     public Book findOne(@PathVariable Long id){
+=======
+    public Book findOne(@PathVariable Long id) throws NotFoundException {
+>>>>>>> feature/user-controller
         return bookRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
@@ -61,12 +65,16 @@ public class BookController {
      * @return the book with the id passed as parameter
      */
     @GetMapping("/author/{authorName}")
+<<<<<<< HEAD
     @ApiOperation(value = "Giving an author name, return the book", response = Book.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
     public Book findByAuthor(@PathVariable String authorName){
+=======
+    public Book findByAuthor(@PathVariable String authorName) throws NotFoundException {
+>>>>>>> feature/user-controller
         return bookRepository.findByAuthor(authorName).orElseThrow(NotFoundException::new);
     }
 
@@ -88,12 +96,16 @@ public class BookController {
      * @param id: Id of the Book to be deleted (Long)
      */
     @DeleteMapping("/{id}")
+<<<<<<< HEAD
     @ApiOperation(value = "Giving an id, delete a book from database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
     public void delete(@PathVariable Long id) {
+=======
+    public void delete(@PathVariable Long id) throws NotFoundException {
+>>>>>>> feature/user-controller
         bookRepository.findById(id).orElseThrow(NotFoundException::new);
         bookRepository.deleteById(id);
     }
@@ -107,6 +119,7 @@ public class BookController {
      * @return the updated Book in the database
      */
     @PutMapping("/{id}")
+<<<<<<< HEAD
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Giving an id and a book, update a book in the database", response = Book.class)
     @ApiResponses(value = {
@@ -115,6 +128,9 @@ public class BookController {
             @ApiResponse(code = 409, message = "The book id mismatch")
     })
     public Book updateBook(@RequestBody Book book, @PathVariable Long id) {
+=======
+    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws IdMismatchException, NotFoundException {
+>>>>>>> feature/user-controller
         if (book.getId() != id) {
             throw new IdMismatchException();
         }
