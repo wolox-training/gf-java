@@ -23,11 +23,9 @@
 hs_err_pid*
 
 #Gradle
-.gradle
-.gradle/6.6.1/**
-.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/
 
 #IntelliJ
-.idea
+.idea/
 
-build/tmp/compileJava/source-classes-mapping.txt
+build/

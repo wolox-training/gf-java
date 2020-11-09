@@ -39,7 +39,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Successfully retrieved user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    public User findOne(@PathVariable Long id){
+    public User findOne(@PathVariable Long id) throws NotFoundException {
         return userRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
@@ -49,7 +49,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Successfully retrieved user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    public User findByUsername(@PathVariable String username){
+    public User findByUsername(@PathVariable String username) throws NotFoundException {
         return userRepository.findByUsername(username).orElseThrow(NotFoundException::new);
     }
 
@@ -67,7 +67,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Successfully deleted user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws NotFoundException {
         userRepository.findById(id).orElseThrow(NotFoundException::new);
         userRepository.deleteById(id);
     }
@@ -79,7 +79,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 409, message = "The user id mismatch")
     })
-    public User updateUser(@RequestBody User user, @PathVariable Long id) {
+    public User updateUser(@RequestBody User user, @PathVariable Long id) throws IdMismatchException, NotFoundException {
         if (user.getId() != id) {
             throw new IdMismatchException();
         }
@@ -95,7 +95,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Book not found"),
             @ApiResponse(code = 208, message = "The book is already owned")
     })
-    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws BookAlreadyOwnedException {
+    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws BookAlreadyOwnedException, NotFoundException {
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(NotFoundException::new);
         user.addBook(book);
@@ -110,7 +110,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Book not found"),
             @ApiResponse(code = 404, message = "The User has not the Book you try to remove")
     })
-    public User removeBookToUser(@PathVariable Long userId, @PathVariable Long bookId) {
+    public User removeBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws NotFoundException {
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(NotFoundException::new);
         user.removeBook(book);
