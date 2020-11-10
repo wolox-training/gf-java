@@ -1,6 +1,7 @@
 package com.wolox.training.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Book {
@@ -9,31 +10,40 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String genre;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String author;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String image;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String title;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String subtitle;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String publisher;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String year;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private Integer pages;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull
     private String isbn;
 
     public Book() {
@@ -122,21 +132,5 @@ public class Book {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", genre='" + genre + '\'' +
-                ", author='" + author + '\'' +
-                ", image='" + image + '\'' +
-                ", title='" + title + '\'' +
-                ", subtitle='" + subtitle + '\'' +
-                ", publisher='" + publisher + '\'' +
-                ", year='" + year + '\'' +
-                ", pages=" + pages +
-                ", isbn='" + isbn + '\'' +
-                '}';
     }
 }
