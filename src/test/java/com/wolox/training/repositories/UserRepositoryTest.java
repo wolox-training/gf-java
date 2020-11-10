@@ -1,0 +1,84 @@
+package com.wolox.training.repositories;
+
+import com.wolox.training.exceptions.NotFoundException;
+import com.wolox.training.models.Book;
+import com.wolox.training.models.User;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@RunWith(SpringRunner.class)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private User testUser;
+    private User testOtherUser;
+    private List<User> testUsers;
+
+    @Before
+    public void setUp(){
+        testUser = new User("Gaby26", "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
+        testOtherUser = new User("TestUsername", "TestName", LocalDate.of(2005, 10, 15));
+        testUsers = new ArrayList<>();
+        testUsers.add(testUser);
+        testUsers.add(testOtherUser);
+    }
+
+    @Test
+    public void whenFindAll_thenReturnAllUsers(){
+        userRepository.save(testUser);
+        userRepository.save(testOtherUser);
+        List<User> repositoryList = userRepository.findAll();
+        assertEquals(repositoryList.size(), testUsers.size());
+        assertEquals(repositoryList.get(0).getUsername(), testUsers.get(0).getUsername());
+        assertEquals(repositoryList.get(1).getBirthdate(), testUsers.get(1).getBirthdate());
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void whenCreateUserWithoutUsername_thenThrowException(){
+        User user = new User(null, "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
+        userRepository.save(user);
+    }
+
+    @Test
+    public void whenSaveUser_thenReturnUser(){
+        User repositoryUser = userRepository.save(testUser);
+        assertEquals(testUser.getUsername(), repositoryUser.getUsername());
+    }
+
+    @Test
+    public void whenFindUser_thenReturnExpectedUser() throws NotFoundException {
+        userRepository.save(testUser);
+        User repositoryUser = userRepository.findByUsername(testUser.getUsername()).orElseThrow(NotFoundException::new);
+        assertEquals(testUser.getUsername(), repositoryUser.getUsername());
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void givenNotExistingId_whenFindUser_thenThrowException() throws NotFoundException {
+        userRepository.findById(100L).orElseThrow(NotFoundException::new);
+    }
+
+    @Test
+    public void whenDeleteUser_thenNotAppearInFindAll(){
+        userRepository.save(testUser);
+        userRepository.save(testOtherUser);
+        userRepository.delete(testUser);
+        assertFalse(userRepository.findAll().contains(testUser));
+        assertTrue(userRepository.findAll().contains(testOtherUser));
+    }
+}
