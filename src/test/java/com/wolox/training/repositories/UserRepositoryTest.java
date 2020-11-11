@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolationException;
@@ -25,6 +26,9 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     private User testUser;
     private User testOtherUser;
     private List<User> testUsers;
@@ -36,12 +40,13 @@ public class UserRepositoryTest {
         testUsers = new ArrayList<>();
         testUsers.add(testUser);
         testUsers.add(testOtherUser);
+        entityManager.persist(testUser);
+        entityManager.persist(testOtherUser);
+        entityManager.flush();
     }
 
     @Test
     public void whenFindAll_thenReturnAllUsers(){
-        userRepository.save(testUser);
-        userRepository.save(testOtherUser);
         List<User> repositoryList = userRepository.findAll();
         assertEquals(repositoryList.size(), testUsers.size());
         assertEquals(repositoryList.get(0).getUsername(), testUsers.get(0).getUsername());
@@ -62,7 +67,6 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindUser_thenReturnExpectedUser() throws UserNotFoundException {
-        userRepository.save(testUser);
         User repositoryUser = userRepository.findByUsername(testUser.getUsername()).orElseThrow(UserNotFoundException::new);
         assertEquals(testUser.getUsername(), repositoryUser.getUsername());
     }
@@ -74,8 +78,6 @@ public class UserRepositoryTest {
 
     @Test
     public void whenDeleteUser_thenNotAppearInFindAll(){
-        userRepository.save(testUser);
-        userRepository.save(testOtherUser);
         userRepository.delete(testUser);
         assertFalse(userRepository.findAll().contains(testUser));
         assertTrue(userRepository.findAll().contains(testOtherUser));

@@ -13,12 +13,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolationException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -27,6 +25,9 @@ public class BookRepositoryTest {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     private Book testBook;
     private List<Book> testBooks;
@@ -41,12 +42,13 @@ public class BookRepositoryTest {
         testBooks = new ArrayList<>();
         testBooks.add(testBook);
         testBooks.add(testOtherBook);
+        entityManager.persist(testBook);
+        entityManager.persist(testOtherBook);
+        entityManager.flush();
     }
 
     @Test
     public void whenFindAll_thenReturnAllBooks(){
-        bookRepository.save(testBook);
-        bookRepository.save(testOtherBook);
         List<Book> repositoryList = bookRepository.findAll();
         assertEquals(repositoryList.size(), testBooks.size());
         assertEquals(repositoryList.get(0).getAuthor(), testBooks.get(0).getAuthor());
@@ -68,7 +70,6 @@ public class BookRepositoryTest {
 
     @Test
     public void whenFindBook_thenReturnExpectedBook() throws BookNotFoundException {
-        bookRepository.save(testBook);
         Book repositoryBook = bookRepository.findByAuthor(testBook.getAuthor()).orElseThrow(BookNotFoundException::new);
         assertEquals(testBook.getTitle(), repositoryBook.getTitle());
     }
@@ -80,8 +81,6 @@ public class BookRepositoryTest {
 
     @Test
     public void whenDeleteBook_thenNotAppearInFindAll(){
-        bookRepository.save(testBook);
-        bookRepository.save(testOtherBook);
         bookRepository.delete(testBook);
         assertFalse(bookRepository.findAll().contains(testBook));
         assertTrue(bookRepository.findAll().contains(testOtherBook));
