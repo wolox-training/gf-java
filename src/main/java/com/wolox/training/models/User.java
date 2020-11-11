@@ -28,7 +28,7 @@ public class User {
     @NotNull
     private LocalDate birthdate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private List<Book> books = new ArrayList<>();
 
     public User(){
