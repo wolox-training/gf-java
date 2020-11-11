@@ -1,7 +1,6 @@
 package com.wolox.training.repositories;
 
-import com.wolox.training.exceptions.NotFoundException;
-import com.wolox.training.models.Book;
+import com.wolox.training.exceptions.UserNotFoundException;
 import com.wolox.training.models.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,15 +61,15 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void whenFindUser_thenReturnExpectedUser() throws NotFoundException {
+    public void whenFindUser_thenReturnExpectedUser() throws UserNotFoundException {
         userRepository.save(testUser);
-        User repositoryUser = userRepository.findByUsername(testUser.getUsername()).orElseThrow(NotFoundException::new);
+        User repositoryUser = userRepository.findByUsername(testUser.getUsername()).orElseThrow(UserNotFoundException::new);
         assertEquals(testUser.getUsername(), repositoryUser.getUsername());
     }
 
-    @Test(expected = NotFoundException.class)
-    public void givenNotExistingId_whenFindUser_thenThrowException() throws NotFoundException {
-        userRepository.findById(100L).orElseThrow(NotFoundException::new);
+    @Test(expected = UserNotFoundException.class)
+    public void givenNotExistingId_whenFindUser_thenThrowException() throws UserNotFoundException {
+        userRepository.findById(100L).orElseThrow(UserNotFoundException::new);
     }
 
     @Test

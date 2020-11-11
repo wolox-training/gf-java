@@ -83,7 +83,7 @@ public class UserController {
             @ApiResponse(code = 409, message = "The user id mismatch")
     })
     @ApiParam(name = "id", required = true)
-    public User updateUser(@RequestBody User user, @PathVariable Long id) throws NotFoundException, IdMismatchException {
+    public User updateUser(@RequestBody User user, @PathVariable Long id) throws UserNotFoundException, UserIdMismatchException {
         if (user.getId() != id) {
             throw new UserIdMismatchException();
         }

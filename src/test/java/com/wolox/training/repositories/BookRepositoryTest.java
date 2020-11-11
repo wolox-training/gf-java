@@ -1,6 +1,6 @@
 package com.wolox.training.repositories;
 
-import com.wolox.training.exceptions.NotFoundException;
+import com.wolox.training.exceptions.BookNotFoundException;
 import com.wolox.training.models.Book;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,15 +67,15 @@ public class BookRepositoryTest {
     }
 
     @Test
-    public void whenFindBook_thenReturnExpectedBook() throws NotFoundException {
+    public void whenFindBook_thenReturnExpectedBook() throws BookNotFoundException {
         bookRepository.save(testBook);
-        Book repositoryBook = bookRepository.findByAuthor(testBook.getAuthor()).orElseThrow(NotFoundException::new);
+        Book repositoryBook = bookRepository.findByAuthor(testBook.getAuthor()).orElseThrow(BookNotFoundException::new);
         assertEquals(testBook.getTitle(), repositoryBook.getTitle());
     }
 
-    @Test(expected = NotFoundException.class)
-    public void givenNotExistingId_whenFindBook_thenThrowException() throws NotFoundException {
-       Book repoBook = bookRepository.findById(100L).orElseThrow(NotFoundException::new);
+    @Test(expected = BookNotFoundException.class)
+    public void givenNotExistingId_whenFindBook_thenThrowException() throws BookNotFoundException {
+       Book repoBook = bookRepository.findById(100L).orElseThrow(BookNotFoundException::new);
     }
 
     @Test
