@@ -177,14 +177,4 @@ public class Book {
         this.isbn = isbn;
     }
 
-    @Override
-    public String toString() {
-        String value = " ";
-        try {
-            value = new ObjectMapper().writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return value;
-    }
 }
