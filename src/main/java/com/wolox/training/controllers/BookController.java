@@ -1,7 +1,7 @@
 package com.wolox.training.controllers;
 
-import com.wolox.training.exceptions.IdMismatchException;
-import com.wolox.training.exceptions.NotFoundException;
+import com.wolox.training.exceptions.BookIdMismatchException;
+import com.wolox.training.exceptions.BookNotFoundException;
 import com.wolox.training.models.Book;
 import com.wolox.training.repositories.BookRepository;
 import io.swagger.annotations.Api;
@@ -51,8 +51,8 @@ public class BookController {
             @ApiResponse(code = 200, message = "Successfully retrieved book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    public Book findOne(@PathVariable Long id) throws NotFoundException {
-        return bookRepository.findById(id).orElseThrow(NotFoundException::new);
+    public Book findOne(@PathVariable Long id) throws BookNotFoundException {
+        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
     /**
@@ -66,8 +66,8 @@ public class BookController {
             @ApiResponse(code = 200, message = "Successfully retrieved book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    public Book findByAuthor(@PathVariable String authorName) throws NotFoundException {
-        return bookRepository.findByAuthor(authorName).orElseThrow(NotFoundException::new);
+    public Book findByAuthor(@PathVariable String authorName) throws BookNotFoundException {
+        return bookRepository.findByAuthor(authorName).orElseThrow(BookNotFoundException::new);
     }
 
     /**
@@ -93,8 +93,8 @@ public class BookController {
             @ApiResponse(code = 200, message = "Successfully deleted book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    public void delete(@PathVariable Long id) throws NotFoundException {
-        bookRepository.findById(id).orElseThrow(NotFoundException::new);
+    public void delete(@PathVariable Long id) throws BookNotFoundException {
+        bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         bookRepository.deleteById(id);
     }
 
@@ -114,11 +114,11 @@ public class BookController {
             @ApiResponse(code = 404, message = "Book not found"),
             @ApiResponse(code = 409, message = "The book id mismatch")
     })
-    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws IdMismatchException, NotFoundException {
+    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws BookIdMismatchException, BookNotFoundException {
         if (book.getId() != id) {
-            throw new IdMismatchException();
+            throw new BookIdMismatchException();
         }
-        bookRepository.findById(id).orElseThrow(NotFoundException::new);
+        bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         return bookRepository.save(book);
     }
 

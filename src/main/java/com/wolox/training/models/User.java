@@ -2,7 +2,7 @@ package com.wolox.training.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wolox.training.exceptions.BookAlreadyOwnedException;
-import com.wolox.training.exceptions.NotFoundException;
+import com.wolox.training.exceptions.BookNotFoundException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -34,7 +34,7 @@ public class User {
     @ApiModelProperty(notes = "The birthdate of a user")
     private LocalDate birthdate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @ApiModelProperty(notes = "The list of books owned by a user")
     private List<Book> books = new ArrayList<>();
 
@@ -91,9 +91,9 @@ public class User {
         books.add(book);
     }
 
-    public void removeBook(Book book) throws NotFoundException {
+    public void removeBook(Book book) throws BookNotFoundException {
         if(!books.contains(book)){
-            throw new NotFoundException("The User has not the Book you try to remove");
+            throw new BookNotFoundException("The User has not the Book you try to remove");
         }
         books.remove(book);
     }
