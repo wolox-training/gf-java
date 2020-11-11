@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Gabriel Fernandez
  * @version 1.0
  */
-@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "The Object is not found")
-public class NotFoundException extends Exception{
-    public NotFoundException() {
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "The Book is not found")
+public class BookNotFoundException extends Exception{
+    public BookNotFoundException() {
     }
 
-    public NotFoundException(String message) {
+    public BookNotFoundException(String message) {
         super(message);
     }
 }

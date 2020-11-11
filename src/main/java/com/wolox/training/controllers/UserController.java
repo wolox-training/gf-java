@@ -1,8 +1,9 @@
 package com.wolox.training.controllers;
 
 import com.wolox.training.exceptions.BookAlreadyOwnedException;
-import com.wolox.training.exceptions.IdMismatchException;
-import com.wolox.training.exceptions.NotFoundException;
+import com.wolox.training.exceptions.UserIdMismatchException;
+import com.wolox.training.exceptions.BookNotFoundException;
+import com.wolox.training.exceptions.UserNotFoundException;
 import com.wolox.training.models.Book;
 import com.wolox.training.models.User;
 import com.wolox.training.repositories.BookRepository;
@@ -27,13 +28,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findOne(@PathVariable Long id) throws NotFoundException {
-        return userRepository.findById(id).orElseThrow(NotFoundException::new);
+    public User findOne(@PathVariable Long id) throws UserNotFoundException {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @GetMapping("/username/{username}")
-    public User findByUsername(@PathVariable String username) throws NotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(NotFoundException::new);
+    public User findByUsername(@PathVariable String username) throws UserNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
     @PostMapping
@@ -43,32 +44,32 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) throws NotFoundException {
-        userRepository.findById(id).orElseThrow(NotFoundException::new);
+    public void delete(@PathVariable Long id) throws UserNotFoundException {
+        userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable Long id) throws IdMismatchException, NotFoundException {
+    public User updateUser(@RequestBody User user, @PathVariable Long id) throws UserIdMismatchException, UserNotFoundException {
         if (user.getId() != id) {
-            throw new IdMismatchException();
+            throw new UserIdMismatchException();
         }
-        userRepository.findById(id).orElseThrow(NotFoundException::new);
+        userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return userRepository.save(user);
     }
 
     @PutMapping("/{userId}/{bookId}")
-    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws BookAlreadyOwnedException, NotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
-        Book book = bookRepository.findById(bookId).orElseThrow(NotFoundException::new);
+    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws BookAlreadyOwnedException, UserNotFoundException, BookNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
         user.addBook(book);
         return userRepository.save(user);
     }
 
     @DeleteMapping("/{userId}/{bookId}")
-    public User removeBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws NotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
-        Book book = bookRepository.findById(bookId).orElseThrow(NotFoundException::new);
+    public User removeBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws UserNotFoundException, BookNotFoundException {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
         user.removeBook(book);
         return userRepository.save(user);
     }

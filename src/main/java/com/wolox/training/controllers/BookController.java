@@ -1,7 +1,7 @@
 package com.wolox.training.controllers;
 
-import com.wolox.training.exceptions.IdMismatchException;
-import com.wolox.training.exceptions.NotFoundException;
+import com.wolox.training.exceptions.BookIdMismatchException;
+import com.wolox.training.exceptions.BookNotFoundException;
 import com.wolox.training.models.Book;
 import com.wolox.training.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +51,8 @@ public class BookController {
      * @return the book with the id passed as parameter
      */
     @GetMapping("/{id}")
-    public Book findOne(@PathVariable Long id) throws NotFoundException {
-        return bookRepository.findById(id).orElseThrow(NotFoundException::new);
+    public Book findOne(@PathVariable Long id) throws BookNotFoundException {
+        return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
     /**
@@ -61,8 +61,8 @@ public class BookController {
      * @return the book with the id passed as parameter
      */
     @GetMapping("/author/{authorName}")
-    public Book findByAuthor(@PathVariable String authorName) throws NotFoundException {
-        return bookRepository.findByAuthor(authorName).orElseThrow(NotFoundException::new);
+    public Book findByAuthor(@PathVariable String authorName) throws BookNotFoundException {
+        return bookRepository.findByAuthor(authorName).orElseThrow(BookNotFoundException::new);
     }
 
     /**
@@ -81,8 +81,8 @@ public class BookController {
      * @param id: Id of the Book to be deleted (Long)
      */
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) throws NotFoundException {
-        bookRepository.findById(id).orElseThrow(NotFoundException::new);
+    public void delete(@PathVariable Long id) throws BookNotFoundException {
+        bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         bookRepository.deleteById(id);
     }
 
@@ -95,11 +95,11 @@ public class BookController {
      * @return the updated Book in the database
      */
     @PutMapping("/{id}")
-    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws IdMismatchException, NotFoundException {
+    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws BookIdMismatchException, BookNotFoundException {
         if (book.getId() != id) {
-            throw new IdMismatchException();
+            throw new BookIdMismatchException();
         }
-        bookRepository.findById(id).orElseThrow(NotFoundException::new);
+        bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         return bookRepository.save(book);
     }
 

@@ -2,11 +2,10 @@ package com.wolox.training.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wolox.training.exceptions.BookAlreadyOwnedException;
-import com.wolox.training.exceptions.NotFoundException;
+import com.wolox.training.exceptions.BookNotFoundException;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,9 +84,9 @@ public class User {
         books.add(book);
     }
 
-    public void removeBook(Book book) throws NotFoundException {
+    public void removeBook(Book book) throws BookNotFoundException {
         if(!books.contains(book)){
-            throw new NotFoundException("The User has not the Book you try to remove");
+            throw new BookNotFoundException("The User has not the Book you try to remove");
         }
         books.remove(book);
     }
