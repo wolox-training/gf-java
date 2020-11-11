@@ -28,4 +28,4 @@ hs_err_pid*
 #IntelliJ
 .idea
 
-build/tmp/compileJava/source-classes-mapping.txt
+build/
