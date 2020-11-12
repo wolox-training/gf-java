@@ -22,7 +22,8 @@ dependencies {
 	compile('org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE')
 	compile('com.google.guava:guava:27.0-jre')
 	runtimeOnly 'org.postgresql:postgresql'
-
+	compile 'org.springframework.security:spring-security-test'
+	compile('org.springframework.boot:spring-boot-starter-security')
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
