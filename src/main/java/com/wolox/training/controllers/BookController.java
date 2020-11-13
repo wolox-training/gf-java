@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -114,11 +115,6 @@ public class BookController {
         }
         bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         return bookRepository.save(book);
-    }
-
-    @GetMapping("/open/{isbn}")
-    public BookDTO getOpenLib(@PathVariable String isbn) throws BookNotFoundException {
-        return openLibraryService.getBook(isbn);
     }
 
 }
