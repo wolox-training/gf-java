@@ -86,5 +86,24 @@ public class BookRepositoryTest {
         assertTrue(bookRepository.findAll().contains(testOtherBook));
     }
 
+    @Test
+    public void whenGetBookByPubGenYear_thenReturnAList(){
+        String publisher = "Editoral Libertador";
+        String genre = "Science";
+        String year = "1859";
+        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, genre, year);
+        assertFalse(testList.isEmpty());
+        assertTrue(testList.contains(testOtherBook));
+    }
+
+    @Test
+    public void givingNonExistentData_whenGetBookByPubGenYear_thenReturnEmptyList(){
+        String publisher = "Editoral Libertador";
+        String genre = "Science";
+        String year = "2000";
+        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, genre, year);
+        assertTrue(testList.isEmpty());
+    }
+
 
 }
