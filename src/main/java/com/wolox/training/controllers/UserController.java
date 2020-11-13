@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.json.Json;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/users")
 @Api
@@ -122,4 +124,11 @@ public class UserController {
         user.removeBook(book);
         return userRepository.save(user);
     }
+
+    @GetMapping("/username")
+    public User getCurrentUser(Principal principal) throws UserNotFoundException {
+        User user = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+        return user;
+    }
+
 }
