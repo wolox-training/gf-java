@@ -48,8 +48,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "Successfully retrieved book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    @ApiParam(name = "id", required = true)
-    public Book findOne(@PathVariable Long id) throws BookNotFoundException {
+    public Book findOne(@ApiParam(name = "id", required = true)@PathVariable Long id) throws BookNotFoundException {
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
@@ -64,8 +63,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "Successfully retrieved book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    @ApiParam(name = "authorName", required = true)
-    public Book findByAuthor(@PathVariable String authorName) throws BookNotFoundException {
+    public Book findByAuthor(@ApiParam(name = "authorName", required = true)@PathVariable String authorName) throws BookNotFoundException {
         return bookRepository.findByAuthor(authorName).orElseThrow(BookNotFoundException::new);
     }
 
@@ -78,8 +76,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Giving a book, save it into database", response = Book.class)
     @ApiResponse(code = 201, message = "Successfully created book")
-    @ApiParam(name = "book", required = true, format = "JSON")
-    public Book create(@RequestBody Book book) {
+    public Book create(@ApiParam(name = "book", required = true)@RequestBody Book book) {
         return bookRepository.save(book);
     }
 
@@ -93,8 +90,7 @@ public class BookController {
             @ApiResponse(code = 200, message = "Successfully deleted book"),
             @ApiResponse(code = 404, message = "Book not found")
     })
-    @ApiParam(name = "id", required = true)
-    public void delete(@PathVariable Long id) throws BookNotFoundException {
+    public void delete(@ApiParam(name = "id", required = true)@PathVariable Long id) throws BookNotFoundException {
         bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         bookRepository.deleteById(id);
     }
@@ -114,8 +110,7 @@ public class BookController {
             @ApiResponse(code = 404, message = "Book not found"),
             @ApiResponse(code = 409, message = "The book id mismatch")
     })
-    @ApiParam(name = "id", required = true)
-    public Book updateBook(@RequestBody Book book, @PathVariable Long id) throws BookIdMismatchException, BookNotFoundException {
+    public Book updateBook(@ApiParam(name = "book", required = true)@RequestBody Book book, @ApiParam(name = "id", required = true)@PathVariable Long id) throws BookIdMismatchException, BookNotFoundException {
         if (book.getId() != id) {
             throw new BookIdMismatchException();
         }

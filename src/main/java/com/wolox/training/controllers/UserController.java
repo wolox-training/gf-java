@@ -38,8 +38,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Successfully retrieved user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @ApiParam(name = "id", required = true)
-    public User findOne(@PathVariable Long id) throws UserNotFoundException {
+    public User findOne(@ApiParam(name = "id", required = true)@PathVariable Long id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
@@ -49,8 +48,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Successfully retrieved user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @ApiParam(name = "username", required = true)
-    public User findByUsername(@PathVariable String username) throws UserNotFoundException {
+    public User findByUsername(@ApiParam(name = "username", required = true)@PathVariable String username) throws UserNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
@@ -58,8 +56,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Giving a user, save it into database", response = User.class)
     @ApiResponse(code = 201, message = "Successfully created user")
-    @ApiParam(name = "user", required = true, format = "JSON")
-    public User create(@RequestBody User user) {
+    public User create(@ApiParam(name = "user", required = true)@RequestBody User user) {
         return userRepository.save(user);
     }
 
@@ -69,8 +66,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Successfully deleted user"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @ApiParam(name = "id", required = true)
-    public void delete(@PathVariable Long id) throws UserNotFoundException {
+    public void delete(@ApiParam(name = "id", required = true)@PathVariable Long id) throws UserNotFoundException {
         userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.deleteById(id);
     }
@@ -82,8 +78,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "User not found"),
             @ApiResponse(code = 409, message = "The user id mismatch")
     })
-    @ApiParam(name = "id", required = true)
-    public User updateUser(@RequestBody User user, @PathVariable Long id) throws UserIdMismatchException, UserNotFoundException {
+    public User updateUser(@ApiParam(name = "book", required = true)@RequestBody User user, @ApiParam(name = "id", required = true)@PathVariable Long id) throws UserIdMismatchException, UserNotFoundException {
         if (user.getId() != id) {
             throw new UserIdMismatchException();
         }
@@ -99,8 +94,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Book not found"),
             @ApiResponse(code = 208, message = "The book is already owned")
     })
-    @ApiParam(name = "userId", required = true)
-    public User addBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws BookAlreadyOwnedException, UserNotFoundException, BookNotFoundException {
+    public User addBookToUser(@ApiParam(name = "userId", required = true)@PathVariable Long userId, @ApiParam(name = "bookId", required = true)@PathVariable Long bookId) throws BookAlreadyOwnedException, UserNotFoundException, BookNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
         user.addBook(book);
@@ -115,8 +109,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Book not found"),
             @ApiResponse(code = 404, message = "The User has not the Book you try to remove")
     })
-    @ApiParam(name = "userId", required = true)
-    public User removeBookToUser(@PathVariable Long userId, @PathVariable Long bookId) throws UserNotFoundException, BookNotFoundException {
+    public User removeBookToUser(@ApiParam(name = "userId", required = true)@PathVariable Long userId, @ApiParam(name = "bookId", required = true)@PathVariable Long bookId) throws UserNotFoundException, BookNotFoundException {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
         user.removeBook(book);
