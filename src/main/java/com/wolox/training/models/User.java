@@ -1,6 +1,7 @@
 package com.wolox.training.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.google.common.base.Preconditions;
 import com.wolox.training.exceptions.BookAlreadyOwnedException;
 import com.wolox.training.exceptions.BookNotFoundException;
@@ -30,8 +31,8 @@ public class User {
     @ApiModelProperty(notes = "The name of a user")
     private String name;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     @NotNull
+    @JsonSerialize(using = LocalDateSerializer.class)
     @ApiModelProperty(notes = "The birthdate of a user")
     private LocalDate birthdate;
 
