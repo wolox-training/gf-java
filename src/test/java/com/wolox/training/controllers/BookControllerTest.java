@@ -64,7 +64,7 @@ public class BookControllerTest {
     public void setUp() throws BookNotFoundException {
         url = "/api/books";
         book1 = new Book("Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
-                "---", "Editorial Pluma y Papel", "1908", 200, "978-987-684-143-4");
+                "---", "Editorial Pluma y Papel", "1859", 200, "978-987-684-143-4");
         book2 = new Book("Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
                 "---", "Editoral Libertador", "1859", 500, "789-285-624-843-6");
         books = new ArrayList<>();
@@ -87,12 +87,13 @@ public class BookControllerTest {
         map.put("name", "Author");
         bookDTO.setAuthors(Collections.singletonList(map));
 
-        given(bookRepository.findAll()).willReturn(books);
+        given(bookRepository.findAll(null, null, null, null, null, null, null, null, null)).willReturn(books);
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
         given(bookRepository.findById(0L)).willReturn(java.util.Optional.of(book2));
         given(bookRepository.findByIsbn("978-987-684-143-4")).willReturn(java.util.Optional.of(book1));
         given(openLibraryService.getBook("789-285-624-843-6")).willReturn(bookDTO);
         given(openLibraryService.getBook("7")).willThrow(new BookNotFoundException("The Book is Not Found"));
+        given(bookRepository.findAll(null, null, null, null, null, null, "1859", null, null)).willReturn(books);
     }
 
     @WithMockUser(username = "gabriel", password = "123456")
@@ -191,6 +192,14 @@ public class BookControllerTest {
     public void givenNonExistentIsbn_whenGetBook_thenReturnStatus201() throws Exception {
         mvc.perform(get(url + "/isbn/7").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givenBookFilters_whenGetBook_thenReturnJsonArray() throws Exception {
+        mvc.perform(get(url + "?year=1859").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].title", is(book1.getTitle())))
+                .andExpect(status().isOk());
     }
 
 }
