@@ -1,6 +1,7 @@
 package com.wolox.training.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.base.Preconditions;
 import com.wolox.training.exceptions.BookAlreadyOwnedException;
 import com.wolox.training.exceptions.BookNotFoundException;
 import io.swagger.annotations.ApiModel;
@@ -57,6 +58,7 @@ public class User {
     }
 
     public void setUsername(String username) {
+        Preconditions.checkNotNull(username, "The username can not be null");
         this.username = username;
     }
 
@@ -65,6 +67,7 @@ public class User {
     }
 
     public void setName(String name) {
+        Preconditions.checkNotNull(name, "The name can not be null");
         this.name = name;
     }
 
@@ -73,6 +76,7 @@ public class User {
     }
 
     public void setBirthdate(LocalDate birthdate) {
+        Preconditions.checkNotNull(birthdate, "The birthdate can not be null");
         this.birthdate = birthdate;
     }
 
@@ -81,10 +85,12 @@ public class User {
     }
 
     public void setBooks(List<Book> books) {
+        Preconditions.checkNotNull(books, "The list of books can not be null");
         this.books = books;
     }
 
     public void addBook(Book book) throws BookAlreadyOwnedException {
+        Preconditions.checkNotNull(book, "The book can not be null");
         if(books.contains(book)){
             throw new BookAlreadyOwnedException("The User already owns the Book");
         }
@@ -92,6 +98,7 @@ public class User {
     }
 
     public void removeBook(Book book) throws BookNotFoundException {
+        Preconditions.checkNotNull(book, "The book can not be null");
         if(!books.contains(book)){
             throw new BookNotFoundException("The User has not the Book you try to remove");
         }

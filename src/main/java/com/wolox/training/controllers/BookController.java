@@ -7,7 +7,6 @@ import com.wolox.training.repositories.BookRepository;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -26,10 +25,6 @@ public class BookController {
     @Autowired
     private BookRepository bookRepository;
 
-    /**
-     * This method retrieve all books from database and showing them in json format
-     * @return Iterable<Book> object to list all books
-     */
     @GetMapping
     @ApiOperation(value = "Return all books", response = Book.class, responseContainer = "List")
     @ApiResponse(code = 200, message = "Successfully retrieved books")
@@ -37,11 +32,7 @@ public class BookController {
         return bookRepository.findAll();
     }
 
-    /**
-     * This method retrieve a book filtering by id
-     * @param id: Id of the book (Long)
-     * @return the book with the id passed as parameter
-     */
+
     @GetMapping("/{id}")
     @ApiOperation(value = "Giving an Id, return the book", response = Book.class)
     @ApiResponses(value = {
@@ -52,11 +43,7 @@ public class BookController {
         return bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
     }
 
-    /**
-     * This method retrieve a book filtering by book author
-     * @param authorName: Name of the book author (String)
-     * @return the book with the id passed as parameter
-     */
+
     @GetMapping("/author/{authorName}")
     @ApiOperation(value = "Giving an author name, return the book", response = Book.class)
     @ApiResponses(value = {
@@ -67,11 +54,7 @@ public class BookController {
         return bookRepository.findByAuthor(authorName).orElseThrow(BookNotFoundException::new);
     }
 
-    /**
-     *  This method send a Book in JSON format to be saved in the database
-     * @param book: The book that contains all the attributes to be saved (Book)
-     * @return the saved Book in the database
-     */
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Giving a book, save it into database", response = Book.class)
@@ -80,10 +63,7 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    /**
-     * This method delete a Book in the database with the id passed by parameter
-     * @param id: Id of the Book to be deleted (Long)
-     */
+
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Giving an id, delete a book from database")
     @ApiResponses(value = {
@@ -95,14 +75,6 @@ public class BookController {
         bookRepository.deleteById(id);
     }
 
-    /**
-     * This method updates a Book in the database validating if the id of the book you want to update
-     * is the same as the one received within the book sent by parameter
-     *
-     * @param book: The Book with the attributes to be updated (Book)
-     * @param id: The Id of the Book to be updated
-     * @return the updated Book in the database
-     */
     @PutMapping("/{id}")
     @ApiOperation(value = "Giving an id and a book, update a book in the database", response = Book.class)
     @ApiResponses(value = {
