@@ -37,10 +37,18 @@ public class BookController {
     @GetMapping
     @ApiOperation(value = "Return all books", response = Book.class, responseContainer = "List")
     @ApiResponse(code = 200, message = "Successfully retrieved books")
-    public Iterable<Book> getAllBooks(){
-        return bookRepository.findAll();
+    public List<Book> getAllBooks(
+            @RequestParam(name = "genre", required = false) String genre,
+            @RequestParam(name = "author", required = false) String author,
+            @RequestParam(name = "image", required = false) String image,
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "subtitle", required = false) String subtitle,
+            @RequestParam(name = "publisher", required = false) String publisher,
+            @RequestParam(name = "year", required = false) String year,
+            @RequestParam(name = "pages", required = false) Integer pages,
+            @RequestParam(name = "isbn", required = false) String isbn){
+        return bookRepository.findAll(genre, author, image, title, subtitle, publisher, year, pages, isbn);
     }
-
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Giving an Id, return the book", response = Book.class)
