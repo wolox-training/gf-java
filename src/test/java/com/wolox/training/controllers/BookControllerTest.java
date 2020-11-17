@@ -77,8 +77,6 @@ public class BookControllerTest {
         bookDTO.setSubtitle("Subtitle");
         bookDTO.setPublishDate("2000");
         bookDTO.setNumberOfPages("200");
-        //bookDTO.setAuthors(new ArrayList<>());
-        //bookDTO.setPublisher(new ArrayList<>());
         HashMap<String, String> map = new HashMap<>();
         map.put("name", "Publisher");
         bookDTO.setPublisher(Collections.singletonList(map));
