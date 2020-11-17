@@ -7,6 +7,7 @@ import com.wolox.training.exceptions.BookAlreadyOwnedException;
 import com.wolox.training.exceptions.BookNotFoundException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,6 +27,10 @@ public class User {
     @NotNull
     @ApiModelProperty(notes = "The username")
     private String username;
+
+    @NotNull
+    @ApiModelProperty(notes = "The user password")
+    private String password;
 
     @NotNull
     @ApiModelProperty(notes = "The name of a user")
@@ -50,6 +55,13 @@ public class User {
         this.birthdate = birthdate;
     }
 
+    public User(@NotNull String username, @NotNull String password, @NotNull String name, @NotNull LocalDate birthdate) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.birthdate = birthdate;
+    }
+
     public long getId() {
         return id;
     }
@@ -61,6 +73,15 @@ public class User {
     public void setUsername(String username) {
         Preconditions.checkNotNull(username, "The username can not be null");
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        Preconditions.checkNotNull(password, "The password can not be null");
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public String getName() {
