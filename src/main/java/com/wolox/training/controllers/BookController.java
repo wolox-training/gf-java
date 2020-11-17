@@ -1,5 +1,6 @@
 package com.wolox.training.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wolox.training.exceptions.BookIdMismatchException;
 import com.wolox.training.exceptions.BookNotFoundException;
 import com.wolox.training.models.Book;
@@ -63,7 +64,7 @@ public class BookController {
     }
 
     @GetMapping("/isbn/{isbn}")
-    public ResponseEntity<Book> findByIsbn(@PathVariable String isbn) throws BookNotFoundException {
+    public ResponseEntity<Book> findByIsbn(@PathVariable String isbn) throws BookNotFoundException, JsonProcessingException {
 
         Optional<Book> oBook = bookRepository.findByIsbn(isbn);
 
@@ -109,11 +110,6 @@ public class BookController {
         }
         bookRepository.findById(id).orElseThrow(BookNotFoundException::new);
         return bookRepository.save(book);
-    }
-
-    @GetMapping("/open/{isbn}")
-    public BookDTO getOpenLib(@PathVariable String isbn) throws BookNotFoundException {
-        return openLibraryService.getBook(isbn);
     }
 
 }
