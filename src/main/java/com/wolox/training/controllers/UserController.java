@@ -1,9 +1,6 @@
 package com.wolox.training.controllers;
 
-import com.wolox.training.exceptions.BookAlreadyOwnedException;
-import com.wolox.training.exceptions.UserIdMismatchException;
-import com.wolox.training.exceptions.BookNotFoundException;
-import com.wolox.training.exceptions.UserNotFoundException;
+import com.wolox.training.exceptions.*;
 import com.wolox.training.models.Book;
 import com.wolox.training.models.User;
 import com.wolox.training.repositories.BookRepository;
@@ -11,10 +8,11 @@ import com.wolox.training.repositories.UserRepository;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
 
 import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -124,4 +122,19 @@ public class UserController {
         return user;
     }
 
+    @PutMapping("/{id}/newPassword")
+    public User newPassword(@PathVariable Long id, @RequestBody Map<String, String> parameters) throws UserNotFoundException, OldPasswordMismatchEception {
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        String oldPass = parameters.get("oldPass");
+        String newPass = parameters.get("newPass");
+
+        if (!BCrypt.checkpw(oldPass, user.getPassword())){
+            throw new OldPasswordMismatchEception("The old password mismatch");
+        }
+        else {
+            user.setPassword(newPass);
+        }
+
+        return user;
+    }
 }
