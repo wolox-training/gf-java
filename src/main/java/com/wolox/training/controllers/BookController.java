@@ -9,6 +9,7 @@ import com.wolox.training.repositories.BookRepository;
 import com.wolox.training.service.OpenLibraryService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,8 +48,9 @@ public class BookController {
             @RequestParam(name = "publisher", required = false) String publisher,
             @RequestParam(name = "year", required = false) String year,
             @RequestParam(name = "pages", required = false) Integer pages,
-            @RequestParam(name = "isbn", required = false) String isbn){
-        return bookRepository.findAll(genre, author, image, title, subtitle, publisher, year, pages, isbn);
+            @RequestParam(name = "isbn", required = false) String isbn,
+            Pageable pageable){
+        return bookRepository.findAll(genre, author, image, title, subtitle, publisher, year, pages, isbn, pageable);
     }
 
     @GetMapping("/{id}")
