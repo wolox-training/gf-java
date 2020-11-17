@@ -1,5 +1,6 @@
 package com.wolox.training.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wolox.training.exceptions.BookAlreadyOwnedException;
 import com.wolox.training.models.Book;
@@ -14,13 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -53,6 +57,7 @@ public class UserControllerTest {
     private User user1;
     private User user2;
     private List<User> users;
+    private Map<String, String> passwords;
 
     @Before
     public void setUp(){
@@ -75,12 +80,54 @@ public class UserControllerTest {
         users.add(user1);
         users.add(user2);
 
+        passwords = new HashMap<>();
+        passwords.put("newPass", "123456789");
+        passwords.put("oldPass", "123456");
+
+
         given(userRepository.findAll()).willReturn(users);
         given(userRepository.findById(1L)).willReturn(java.util.Optional.of(user1));
         given(userRepository.findById(0L)).willReturn(java.util.Optional.of(user2));
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
         given(bookRepository.findById(2L)).willReturn(java.util.Optional.of(book2));
         given(userRepository.findByUsername("gabriel")).willReturn(java.util.Optional.ofNullable(user1));
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givingId_whenChangePassword_thenReturnUser() throws Exception {
+        String contentPassword = new ObjectMapper().writeValueAsString(passwords);
+        user1.setPassword(passwords.get("oldPass"));
+        mvc.perform(put(url + "/1/newPassword").contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8")
+                .content(contentPassword))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givingNonExistentId_whenChangePassword_thenReturnStatus404() throws Exception {
+        String contentPassword = new ObjectMapper().writeValueAsString(passwords);
+        user1.setPassword(passwords.get("oldPass"));
+        mvc.perform(put(url + "/15/newPassword").contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8")
+                .content(contentPassword))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givingNonExistentOldPassword_whenChangePassword_thenReturnStatus409() throws Exception {
+        user1.setPassword(passwords.get("oldPass"));
+        passwords.replace("oldPass", "1234");
+        String contentPassword = new ObjectMapper().writeValueAsString(passwords);
+        mvc.perform(put(url + "/1/newPassword").contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8")
+                .content(contentPassword))
+                .andDo(print())
+                .andExpect(status().isConflict());
     }
 
     @WithMockUser(username = "gabriel", password = "123456")
