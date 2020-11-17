@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolationException;
@@ -36,7 +38,7 @@ public class BookRepositoryTest {
     @Before
     public void setUp(){
         testBook = new Book("Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
-                "---", "Editorial Pluma y Papel", "1908", 200, "978-987-684-143-4");
+                "---", "Editorial Pluma y Papel", "1859", 200, "978-987-684-143-4");
         testOtherBook = new Book("Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
                 "---", "Editoral Libertador", "1859", 500, "789-285-624-843-6");
         testBooks = new ArrayList<>();
@@ -91,7 +93,7 @@ public class BookRepositoryTest {
         String publisher = "Editoral Libertador";
         String genre = "Science";
         String year = "1859";
-        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, genre, year);
+        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, genre, year, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testOtherBook));
     }
@@ -101,7 +103,7 @@ public class BookRepositoryTest {
         String publisher = "Editoral Libertador";
         String genre = "Science";
         String year = "2000";
-        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, genre, year);
+        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, genre, year, null);
         assertTrue(testList.isEmpty());
     }
 
@@ -109,7 +111,7 @@ public class BookRepositoryTest {
     public void whenGetBookByPubGenYearQuery_thenReturnAList(){
         String publisher = "Editoral Libertador";
         String year = "1859";
-        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, null, null);
+        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, null, null, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testOtherBook));
     }
@@ -118,9 +120,18 @@ public class BookRepositoryTest {
     public void whenGetAllBooksWhitFilters_thenReturnAList(){
         String publisher = "Editoral Libertador";
         String year = "1859";
-        List<Book> testList = bookRepository.findAll(null, null, null, null, null, publisher, year, null, null);
+        List<Book> testList = bookRepository.findAll(null, null, null, null, null, publisher, year, null, null, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testOtherBook));
+    }
+
+    @Test
+    public void whenGetAllBooksWhitFiltersAndPagingSorting_thenReturnAList(){
+        String year = "1859";
+        List<Book> testList = bookRepository.findAll(null, null, null, null, null, null, year, null, null, PageRequest.of(0,2, Sort.by("title")));
+        assertFalse(testList.isEmpty());
+        assertEquals(testBook.getTitle(), testList.get(0).getTitle());
+        assertEquals(testOtherBook.getTitle(), testList.get(1).getTitle());
     }
 
 
