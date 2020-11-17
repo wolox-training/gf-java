@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -68,7 +70,7 @@ public class UserControllerTest {
                 "---", "Editoral Libertador", "1859", 500, "789-285-624-843-6");
 
         user1 = new User("gabriel","123456" , "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
-        user2 = new User("TestUsername","1234" , "TestName", LocalDate.of(2005, 10, 15));
+        user2 = new User("TestUsername","1234" , "Gabriela", LocalDate.of(2005, 10, 15));
 
         try {
             user1.addBook(book2);
@@ -85,7 +87,7 @@ public class UserControllerTest {
         passwords.put("oldPass", "123456");
 
 
-        given(userRepository.findAll()).willReturn(users);
+        given(userRepository.findAllUsers(PageRequest.of(0,20))).willReturn(users);
         given(userRepository.findById(1L)).willReturn(java.util.Optional.of(user1));
         given(userRepository.findById(0L)).willReturn(java.util.Optional.of(user2));
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
@@ -250,4 +252,17 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(user1.getName())))
                 .andExpect(jsonPath("$.birthdate", is(user1.getBirthdate().toString())));
     }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void whenGetUsersAndPagingSorting_thenReturnUsers() throws Exception {
+        given(userRepository.findAllUsers(PageRequest.of(0,2, Sort.by("name")))).willReturn(users);
+
+        mvc.perform(get(url + "?page=0&size=2&sort=name").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(users.size())))
+                .andExpect(jsonPath("$[0].name", is(user1.getName())))
+                .andExpect(jsonPath("$[1].name", is(user2.getName())));
+    }
+
 }
