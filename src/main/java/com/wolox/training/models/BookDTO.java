@@ -12,6 +12,7 @@ public class BookDTO {
     private String publishDate;
     private String numberOfPages;
     private List<HashMap<String, String>> authors;
+    private String cover;
 
     public BookDTO() {
     }
@@ -72,6 +73,14 @@ public class BookDTO {
         this.authors = authors;
     }
 
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
     public Book toBook(){
         Book book = new Book();
         book.setIsbn(isbn);
@@ -81,7 +90,7 @@ public class BookDTO {
         book.setYear(publishDate);
         book.setAuthor(authors.get(0).get("name"));
         book.setPublisher(publisher.get(0).get("name"));
-        book.setImage("---");
+        book.setImage(cover);
 
         return book;
     }
