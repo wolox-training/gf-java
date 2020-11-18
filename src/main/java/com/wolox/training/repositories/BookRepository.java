@@ -1,6 +1,7 @@
 package com.wolox.training.repositories;
 
 import com.wolox.training.models.Book;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,9 +25,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "AND (:genre is null OR b.genre = :genre) " +
             "AND (:year is null OR b.year = :year)")
     public List<Book> findAllByPublisherAndGenreAndYear(
-            @Param("publisher") String publisher,
-            @Param("genre") String genre,
-            @Param("year") String year);
+           @Param("publisher") String publisher,
+           @Param("genre") String genre,
+           @Param("year") String year,
+           Pageable pageable);
 
    @Query("SELECT b FROM Book b " +
            "WHERE (:genre is null OR b.genre = :genre) " +
@@ -47,6 +49,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
            @Param("publisher") String publisher,
            @Param("year") String year,
            @Param("pages") Integer pages,
-           @Param("isbn") String isbn);
+           @Param("isbn") String isbn,
+           Pageable pageable);
 
 }

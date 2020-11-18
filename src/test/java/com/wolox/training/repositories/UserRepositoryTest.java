@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ConstraintViolationException;
@@ -36,7 +38,7 @@ public class UserRepositoryTest {
     @Before
     public void setUp(){
         testUser = new User("Gaby26","123456", "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
-        testOtherUser = new User("TestUsername","123456", "TestName", LocalDate.of(2005, 10, 15));
+        testOtherUser = new User("TestUsername","123456", "TestName", LocalDate.of(2001, 10, 15));
         testUsers = new ArrayList<>();
         testUsers.add(testUser);
         testUsers.add(testOtherUser);
@@ -88,7 +90,7 @@ public class UserRepositoryTest {
         LocalDate date1 = LocalDate.of(1900,01,10);
         LocalDate date2 = LocalDate.of(2005,10,10);
         String nameContains = "Gabriel Fernandez";
-        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains);
+        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testUser));
     }
@@ -98,7 +100,7 @@ public class UserRepositoryTest {
         LocalDate date1 = LocalDate.of(2000,01,10);
         LocalDate date2 = LocalDate.of(2005,10,10);
         String nameContains = "OOOOO";
-        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains);
+        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains, null);
         assertTrue(testList.isEmpty());
 
     }
@@ -106,8 +108,19 @@ public class UserRepositoryTest {
     @Test
     public void whenGetByNameAndDatesBetweenQuery_thenReturnAList(){
         String nameContains = "el";
-        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(null, null, nameContains);
+        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(null, null, nameContains, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testUser));
+    }
+
+    @Test
+    public void whenGetByNameAndDatesBetweenAndPagingSorting_thenReturnAList(){
+        LocalDate date1 = LocalDate.of(1900,01,10);
+        LocalDate date2 = LocalDate.of(2005,10,10);
+        String nameContains = "e";
+        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains, PageRequest.of(0,2, Sort.by("name")));
+        assertFalse(testList.isEmpty());
+        assertEquals(testUser.getName(), testList.get(0).getName());
+        assertEquals(testOtherUser.getName(), testList.get(1).getName());
     }
 }

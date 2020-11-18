@@ -14,6 +14,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -59,6 +62,7 @@ public class BookControllerTest {
     private Book book2;
     private List<Book> books;
     private BookDTO bookDTO;
+    private Pageable pageable;
 
     @Before
     public void setUp() throws BookNotFoundException, JsonProcessingException {
@@ -86,17 +90,19 @@ public class BookControllerTest {
         map.put("name", "Author");
         bookDTO.setAuthors(Collections.singletonList(map));
 
-        given(bookRepository.findAll(null, null, null, null, null, null, null, null, null)).willReturn(books);
+        pageable = PageRequest.of(0,20);
+
+        given(bookRepository.findAll(null, null, null, null, null, null, null, null, null, pageable)).willReturn(books);
 
         cover.put("small", "image.jpg");
         bookDTO.setCover(cover);
-
+        
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
         given(bookRepository.findById(0L)).willReturn(java.util.Optional.of(book2));
         given(bookRepository.findByIsbn("978-987-684-143-4")).willReturn(java.util.Optional.of(book1));
         given(openLibraryService.getBook("789-285-624-843-6")).willReturn(bookDTO);
         given(openLibraryService.getBook("7")).willThrow(new BookNotFoundException("The Book is Not Found"));
-        given(bookRepository.findAll(null, null, null, null, null, null, "1859", null, null)).willReturn(books);
+        given(bookRepository.findAll(null, null, null, null, null, null, "1859", null, null, pageable)).willReturn(books);
     }
 
     @WithMockUser(username = "gabriel", password = "123456")
@@ -192,7 +198,7 @@ public class BookControllerTest {
 
     @WithMockUser(username = "gabriel", password = "123456")
     @Test
-    public void givenNonExistentIsbn_whenGetBook_thenReturnStatus201() throws Exception {
+    public void givenNonExistentIsbn_whenGetBook_thenReturnStatus404() throws Exception {
         mvc.perform(get(url + "/isbn/7").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -202,6 +208,19 @@ public class BookControllerTest {
     public void givenBookFilters_whenGetBook_thenReturnJsonArray() throws Exception {
         mvc.perform(get(url + "?year=1859").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].title", is(book1.getTitle())))
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givenBookFiltersAndPagingSorting_whenGetBook_thenReturnJsonArray() throws Exception {
+
+        given(bookRepository.findAll(null,null,null,null,null,null,"1859",null,null,PageRequest.of(0,2, Sort.by("title")))).willReturn(books);
+
+        mvc.perform(get(url + "?year=1859&page=0&size=2&sort=title").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].title", is(book1.getTitle())))
+                .andExpect(jsonPath("$.[1].title", is(book2.getTitle())))
+                .andExpect(jsonPath("$", hasSize(books.size())))
                 .andExpect(status().isOk());
     }
 
