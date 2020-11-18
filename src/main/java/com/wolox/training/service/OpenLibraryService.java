@@ -1,6 +1,7 @@
 package com.wolox.training.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.wolox.training.exceptions.BookNotFoundException;
@@ -26,19 +27,10 @@ public class OpenLibraryService {
     private BookDTO getBookNode(ObjectNode objectNode, String isbn) throws JsonProcessingException {
         final String isbnQueryValue = "ISBN:" + isbn;
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        BookDTO bookDTO = new BookDTO();
-        System.out.println(objectNode.get(isbnQueryValue));
+        BookDTO bookDTO = objectMapper.treeToValue(objectNode.get(isbnQueryValue), BookDTO.class);
         bookDTO.setIsbn(isbn);
-        bookDTO.setTitle(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("title"), String.class));
-        bookDTO.setSubtitle(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("subtitle"), String.class));
-        bookDTO.setNumberOfPages(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("number_of_pages"), String.class));
-        bookDTO.setPublishDate(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("publish_date"), String.class));
-        bookDTO.setAuthors(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("authors"), List.class));
-        bookDTO.setPublisher(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("publishers"), List.class));
-        bookDTO.setPublisher(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("publishers"), List.class));
-        bookDTO.setCover(objectMapper.convertValue(objectNode.get(isbnQueryValue).get("cover").get("medium"), String.class));
 
         return bookDTO;
     }
