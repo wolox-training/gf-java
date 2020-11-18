@@ -85,7 +85,7 @@ public class BookControllerTest {
         map.clear();
         map.put("name", "Author");
         bookDTO.setAuthors(Collections.singletonList(map));
-        
+
         given(bookRepository.findAll(null, null, null, null, null, null, null, null, null)).willReturn(books);
 
         cover.put("small", "image.jpg");
