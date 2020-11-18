@@ -1,5 +1,7 @@
 package com.wolox.training.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,14 +10,13 @@ public class BookDTO {
     private String isbn;
     private String title;
     private String subtitle;
-    private List<HashMap<String, String>> publisher;
+    private List<HashMap<String, String>> publishers;
+    @JsonProperty("publish_date")
     private String publishDate;
-    private String numberOfPages;
+    @JsonProperty("number_of_pages")
+    private int numberOfPages;
     private List<HashMap<String, String>> authors;
-    private String cover;
-
-    public BookDTO() {
-    }
+    private HashMap<String, String> cover;
 
     public String getIsbn() {
         return isbn;
@@ -41,12 +42,12 @@ public class BookDTO {
         this.subtitle = subtitle;
     }
 
-    public List<HashMap<String, String>> getPublisher() {
-        return publisher;
+    public List<HashMap<String, String>> getPublishers() {
+        return publishers;
     }
 
-    public void setPublisher(List<HashMap<String, String>> publisher) {
-        this.publisher = publisher;
+    public void setPublishers(List<HashMap<String, String>> publishers) {
+        this.publishers = publishers;
     }
 
     public String getPublishDate() {
@@ -57,11 +58,11 @@ public class BookDTO {
         this.publishDate = publishDate;
     }
 
-    public String getNumberOfPages() {
+    public int getNumberOfPages() {
         return numberOfPages;
     }
 
-    public void setNumberOfPages(String numberOfPages) {
+    public void setNumberOfPages(int numberOfPages) {
         this.numberOfPages = numberOfPages;
     }
 
@@ -73,11 +74,11 @@ public class BookDTO {
         this.authors = authors;
     }
 
-    public String getCover() {
+    public HashMap<String, String> getCover() {
         return cover;
     }
 
-    public void setCover(String cover) {
+    public void setCover(HashMap<String, String> cover) {
         this.cover = cover;
     }
 
@@ -86,11 +87,11 @@ public class BookDTO {
         book.setIsbn(isbn);
         book.setTitle(title);
         book.setSubtitle(subtitle);
-        book.setPages(Integer.parseInt(numberOfPages));
+        book.setPages(numberOfPages);
         book.setYear(publishDate);
         book.setAuthor(authors.get(0).get("name"));
-        book.setPublisher(publisher.get(0).get("name"));
-        book.setImage(cover);
+        book.setPublisher(publishers.get(0).get("name"));
+        book.setImage(cover.get("small"));
 
         return book;
     }
