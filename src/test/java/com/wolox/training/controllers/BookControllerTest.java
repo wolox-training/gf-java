@@ -61,7 +61,7 @@ public class BookControllerTest {
     private BookDTO bookDTO;
 
     @Before
-    public void setUp() throws BookNotFoundException {
+    public void setUp() throws BookNotFoundException, JsonProcessingException {
         url = "/api/books";
         book1 = new Book("Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
                 "---", "Editorial Pluma y Papel", "1859", 200, "978-987-684-143-4");
@@ -76,16 +76,21 @@ public class BookControllerTest {
         bookDTO.setTitle("Title");
         bookDTO.setSubtitle("Subtitle");
         bookDTO.setPublishDate("2000");
-        bookDTO.setNumberOfPages("200");
+        bookDTO.setNumberOfPages(200);
         HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> cover = new HashMap<>();
         map.put("name", "Publisher");
-        bookDTO.setPublisher(Collections.singletonList(map));
+        bookDTO.setPublishers(Collections.singletonList(map));
 
         map.clear();
         map.put("name", "Author");
         bookDTO.setAuthors(Collections.singletonList(map));
-
+        
         given(bookRepository.findAll(null, null, null, null, null, null, null, null, null)).willReturn(books);
+
+        cover.put("small", "image.jpg");
+        bookDTO.setCover(cover);
+
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
         given(bookRepository.findById(0L)).willReturn(java.util.Optional.of(book2));
         given(bookRepository.findByIsbn("978-987-684-143-4")).willReturn(java.util.Optional.of(book1));
