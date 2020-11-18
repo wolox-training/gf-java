@@ -96,7 +96,7 @@ public class BookControllerTest {
 
         cover.put("small", "image.jpg");
         bookDTO.setCover(cover);
-        
+
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
         given(bookRepository.findById(0L)).willReturn(java.util.Optional.of(book2));
         given(bookRepository.findByIsbn("978-987-684-143-4")).willReturn(java.util.Optional.of(book1));
