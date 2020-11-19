@@ -29,6 +29,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+	testCompile('com.github.tomakehurst:wiremock:2.27.2')
 }
 
 test {
