@@ -1,47 +1,86 @@
 package com.wolox.training.models;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+/**
+ * This class represent a book with its respective attributes
+ *
+ * @author Gabriel Fernandez
+ * @version 1.0
+ */
 @Entity
 public class Book {
 
+    /**
+     * The Id of a Book
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    /**
+     * The genre of a Book
+     */
     @Column
     @NotNull
     private String genre;
 
+    /**
+     * The author of a Book
+     */
     @Column
     @NotNull
     private String author;
 
+    /**
+     * The cover image of a Book
+     */
     @Column
     @NotNull
     private String image;
 
+    /**
+     * The title of a Book
+     */
     @Column
     @NotNull
     private String title;
 
+    /**
+     * The subtitle of a Book
+     */
     @Column
     @NotNull
     private String subtitle;
 
+    /**
+     * The publisher of a Book
+     */
     @Column
     @NotNull
     private String publisher;
 
+    /**
+     * The year of publication of a Book
+     */
     @Column
     @NotNull
     private String year;
 
+    /**
+     * The pages of a Book
+     */
     @Column
     @NotNull
     private Integer pages;
 
+    /**
+     * The ISBN of a Book
+     */
     @Column
     @NotNull
     private String isbn;
@@ -60,6 +99,10 @@ public class Book {
         this.year = year;
         this.pages = pages;
         this.isbn = isbn;
+    }
+
+    public long getId(){
+        return this.id;
     }
 
     public String getGenre() {
@@ -133,4 +176,5 @@ public class Book {
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
+
 }
