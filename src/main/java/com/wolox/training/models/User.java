@@ -7,6 +7,10 @@ import com.wolox.training.exceptions.BookAlreadyOwnedException;
 import com.wolox.training.exceptions.BookNotFoundException;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
@@ -18,6 +22,9 @@ import java.util.List;
 
 @Entity(name = "Users")
 @ApiModel(description = "Users")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -45,38 +52,9 @@ public class User {
     @ApiModelProperty(notes = "The list of books owned by a user")
     private List<Book> books = new ArrayList<>();
 
-    public User(){
-
-    }
-
-    public User(@NotNull String username, @NotNull String name, @NotNull LocalDate birthdate) {
-        this.username = username;
-        this.name = name;
-        this.birthdate = birthdate;
-    }
-
-    public User(@NotNull String username, @NotNull String password, @NotNull String name, @NotNull LocalDate birthdate) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.birthdate = birthdate;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         Preconditions.checkNotNull(username, "The username can not be null");
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -84,26 +62,14 @@ public class User {
         this.password = new BCryptPasswordEncoder().encode(password);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         Preconditions.checkNotNull(name, "The name can not be null");
         this.name = name;
     }
 
-    public LocalDate getBirthdate() {
-        return birthdate;
-    }
-
     public void setBirthdate(LocalDate birthdate) {
         Preconditions.checkNotNull(birthdate, "The birthdate can not be null");
         this.birthdate = birthdate;
-    }
-
-    public List<Book> getBooks() {
-        return Collections.unmodifiableList(this.books);
     }
 
     public void setBooks(List<Book> books) {
