@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Gabriel Fernandez
  * @version 1.0
  */
-@ResponseStatus(code = HttpStatus.CONFLICT, reason = "The Object Id mismatch")
-public class IdMismatchException extends Exception{
-    public IdMismatchException() {
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = "The Book Id mismatch")
+public class BookIdMismatchException extends Exception{
+    public BookIdMismatchException() {
     }
 
-    public IdMismatchException(String message) {
+    public BookIdMismatchException(String message) {
         super(message);
     }
 }
