@@ -3,11 +3,15 @@ package com.wolox.training.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.wolox.training.exceptions.BookNotFoundException;
 import com.wolox.training.models.BookDTO;
 import com.wolox.training.service.OpenLibraryService;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -29,47 +35,54 @@ public class OpenLibraryTest {
     @Autowired
     private OpenLibraryService openLibraryService;
 
-    String openLibraryUrl = "/api/books";
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(8089);
 
-    private WireMockServer wireMockServer;
+    private String body = "{\n" +
+            "  \"id\": 1,\n" +
+            "  \"name\": \"Leanne Graham\",\n" +
+            "  \"username\": \"Bret\",\n" +
+            "  \"email\": \"Sincere@april.biz\",\n" +
+            "  \"address\": {\n" +
+            "    \"street\": \"Kulas Light\",\n" +
+            "    \"suite\": \"Apt. 556\",\n" +
+            "    \"city\": \"Gwenborough\",\n" +
+            "    \"zipcode\": \"92998-3874\",\n" +
+            "    \"geo\": {\n" +
+            "      \"lat\": \"-37.3159\",\n" +
+            "      \"lng\": \"81.1496\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"phone\": \"1-770-736-8031 x56442\",\n" +
+            "  \"website\": \"hildegard.org\",\n" +
+            "  \"company\": {\n" +
+            "    \"name\": \"Romaguera-Crona\",\n" +
+            "    \"catchPhrase\": \"Multi-layered client-server neural-net\",\n" +
+            "    \"bs\": \"harness real-time e-markets\"\n" +
+            "  }\n" +
+            "}";
 
-    @Before
-    public void setUp(){
+   @Before
+    public void setUp() throws JSONException {
 
-        String isbn = "0385472579";
-        String nonExistentIsbn = "";
-        String url = openLibraryUrl + "?bibkeys=ISBN:" + isbn + "&format=json&jscmd=data";
-        wireMockServer = new WireMockServer(8089);
-        wireMockServer.start();
+       stubFor(get(urlEqualTo("/api/books?bibkeys=ISBN:0385472579&format=json&jscmd=data"))
+               .willReturn(aResponse()
+                       .withStatus(200)
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(body)
+               )
+       );
 
-       /* wireMockServer
-                .stubFor(get(urlEqualTo(url))
-                        .willReturn(aResponse()
-                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withStatus(200)
-                                .withBodyFile("{}")));*/
-
-        wireMockServer
-                .stubFor(get(urlEqualTo(url))
-                        .willReturn(aResponse()
-                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withStatus(200)
-                                .withBodyFile("ol_response.json")));
-
-
-
-    }
-
-    @After
-    public void tearDown(){
-        wireMockServer.stop();
-    }
+   }
 
     @Test
     public void testOL() throws BookNotFoundException, JsonProcessingException {
 
-    BookDTO bookDTO = openLibraryService.getBook("0385472579");
+        //RestTemplate restTemplate = new RestTemplate();
+        //ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8089/api/books?bibkeys=ISBN:0385472579&format=json&jscmd=data", String.class);
+        //System.out.println(responseEntity);
 
+        System.out.println(openLibraryService.getBook("0385472579"));
     }
 
 
