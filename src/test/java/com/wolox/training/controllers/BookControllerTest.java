@@ -2,9 +2,12 @@ package com.wolox.training.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wolox.training.exceptions.BookNotFoundException;
 import com.wolox.training.models.Book;
+import com.wolox.training.models.BookDTO;
 import com.wolox.training.repositories.BookRepository;
 import com.wolox.training.security.CustomAuthenticationProvider;
+import com.wolox.training.service.OpenLibraryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +34,8 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -44,15 +49,19 @@ public class BookControllerTest {
     private BookRepository bookRepository;
 
     @MockBean
+    private OpenLibraryService openLibraryService;
+
+    @MockBean
     private CustomAuthenticationProvider authenticationProvider;
 
     private String url;
     private Book book1;
     private Book book2;
     private List<Book> books;
+    private BookDTO bookDTO;
 
     @Before
-    public void setUp(){
+    public void setUp() throws BookNotFoundException, JsonProcessingException {
         url = "/api/books";
         book1 = new Book("Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
                 "---", "Editorial Pluma y Papel", "1908", 200, "978-987-684-143-4");
@@ -62,9 +71,30 @@ public class BookControllerTest {
         books.add(book1);
         books.add(book2);
 
+        bookDTO = new BookDTO();
+        bookDTO.setIsbn("789-285-624-843-6");
+        bookDTO.setTitle("Title");
+        bookDTO.setSubtitle("Subtitle");
+        bookDTO.setPublishDate("2000");
+        bookDTO.setNumberOfPages(200);
+        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> cover = new HashMap<>();
+        map.put("name", "Publisher");
+        bookDTO.setPublishers(Collections.singletonList(map));
+
+        map.clear();
+        map.put("name", "Author");
+        bookDTO.setAuthors(Collections.singletonList(map));
+
+        cover.put("small", "image.jpg");
+        bookDTO.setCover(cover);
+
         given(bookRepository.findAll()).willReturn(books);
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
         given(bookRepository.findById(0L)).willReturn(java.util.Optional.of(book2));
+        given(bookRepository.findByIsbn("978-987-684-143-4")).willReturn(java.util.Optional.of(book1));
+        given(openLibraryService.getBook("789-285-624-843-6")).willReturn(bookDTO);
+        given(openLibraryService.getBook("7")).willThrow(new BookNotFoundException("The Book is Not Found"));
     }
 
     @WithMockUser(username = "gabriel", password = "123456")
@@ -141,6 +171,28 @@ public class BookControllerTest {
     public void whenNotAuthenticated_thenReturnStatus401() throws Exception {
         mvc.perform(get(url).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givenIsbn_whenGetBookFromDatabase_thenReturnStatus200() throws Exception {
+        mvc.perform(get(url + "/isbn/978-987-684-143-4").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title", is(book1.getTitle())));
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givenIsbn_whenGetBookFromOpenLibrary_thenReturnStatus201() throws Exception {
+        mvc.perform(get(url + "/isbn/789-285-624-843-6").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void givenNonExistentIsbn_whenGetBook_thenReturnStatus201() throws Exception {
+        mvc.perform(get(url + "/isbn/7").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
 }

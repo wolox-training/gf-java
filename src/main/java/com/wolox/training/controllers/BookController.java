@@ -1,13 +1,19 @@
 package com.wolox.training.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wolox.training.exceptions.BookIdMismatchException;
 import com.wolox.training.exceptions.BookNotFoundException;
 import com.wolox.training.models.Book;
+import com.wolox.training.models.BookDTO;
 import com.wolox.training.repositories.BookRepository;
+import com.wolox.training.service.OpenLibraryService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 /**
  * This class is a rest controller for book.
@@ -24,6 +30,9 @@ public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private OpenLibraryService openLibraryService;
 
     @GetMapping
     @ApiOperation(value = "Return all books", response = Book.class, responseContainer = "List")
@@ -54,6 +63,19 @@ public class BookController {
         return bookRepository.findByAuthor(authorName).orElseThrow(BookNotFoundException::new);
     }
 
+    @GetMapping("/isbn/{isbn}")
+    public ResponseEntity<Book> findByIsbn(@PathVariable String isbn) throws BookNotFoundException, JsonProcessingException {
+
+        Optional<Book> oBook = bookRepository.findByIsbn(isbn);
+
+        if (oBook.isPresent()){
+            return new ResponseEntity<>(oBook.get(), HttpStatus.OK);
+        } else {
+            BookDTO bookDTO = openLibraryService.getBook(isbn);
+            Book book = bookRepository.save(bookDTO.toBook());
+            return new ResponseEntity<>(book, HttpStatus.CREATED);
+        }
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

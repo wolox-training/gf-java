@@ -31,7 +31,6 @@ public class Book {
      * The genre of a Book
      */
     @Column
-    @NotNull
     @ApiModelProperty(notes = "The book genre: could be horror, comedy, drama, etc.")
     private String genre;
 
@@ -124,7 +123,6 @@ public class Book {
     }
 
     public void setGenre(String genre) {
-        Preconditions.checkNotNull(genre, "The genre can not be null");
         this.genre = genre;
     }
 
