@@ -67,9 +67,9 @@ public class BookControllerTest {
     @Before
     public void setUp() throws BookNotFoundException, JsonProcessingException {
         url = "/api/books";
-        book1 = new Book("Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
+        book1 = new Book(1,"Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
                 "---", "Editorial Pluma y Papel", "1859", 200, "978-987-684-143-4");
-        book2 = new Book("Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
+        book2 = new Book(0,"Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
                 "---", "Editoral Libertador", "1859", 500, "789-285-624-843-6");
         books = new ArrayList<>();
         books.add(book1);
