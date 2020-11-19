@@ -35,8 +35,8 @@ public class UserRepositoryTest {
 
     @Before
     public void setUp(){
-        testUser = new User("Gaby26", "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
-        testOtherUser = new User("TestUsername", "TestName", LocalDate.of(2005, 10, 15));
+        testUser = new User("Gaby26","123456", "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
+        testOtherUser = new User("TestUsername","123456", "TestName", LocalDate.of(2005, 10, 15));
         testUsers = new ArrayList<>();
         testUsers.add(testUser);
         testUsers.add(testOtherUser);
@@ -81,5 +81,24 @@ public class UserRepositoryTest {
         userRepository.delete(testUser);
         assertFalse(userRepository.findAll().contains(testUser));
         assertTrue(userRepository.findAll().contains(testOtherUser));
+    }
+
+    @Test
+    public void whenGetByNameAndDatesBetween_thenReturnAList(){
+        LocalDate date1 = LocalDate.of(2000,01,10);
+        LocalDate date2 = LocalDate.of(2000,10,10);
+        String nameContains = "el";
+        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains);
+        assertFalse(testList.isEmpty());
+        assertTrue(testList.contains(testUser));
+    }
+
+    @Test
+    public void givingNonExistentData_whenGetByNameAndDatesBetween_thenReturnEmptyList(){
+        LocalDate date1 = LocalDate.of(2001,01,10);
+        LocalDate date2 = LocalDate.of(2002,10,10);
+        String nameContains = "el";
+        List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains);
+        assertTrue(testList.isEmpty());
     }
 }
