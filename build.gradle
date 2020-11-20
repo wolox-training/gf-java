@@ -25,11 +25,12 @@ dependencies {
 	compile 'org.springframework.security:spring-security-test'
 	compile('org.springframework.boot:spring-boot-starter-security')
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-
+	compileOnly('org.projectlombok:lombok:1.18.16')
+	annotationProcessor('org.projectlombok:lombok:1.18.16')
+	testCompileOnly('org.projectlombok:lombok:1.18.16')
+	testAnnotationProcessor('org.projectlombok:lombok:1.18.16')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
-
 	testCompile('com.github.tomakehurst:wiremock:2.27.2')
 }
 

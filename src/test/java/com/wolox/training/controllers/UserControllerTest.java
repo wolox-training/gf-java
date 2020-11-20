@@ -64,13 +64,13 @@ public class UserControllerTest {
     @Before
     public void setUp(){
         url = "/api/users";
-        book1 = new Book("Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
+        book1 = new Book(1,"Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
                 "---", "Editorial Pluma y Papel", "1908", 200, "978-987-684-143-4");
-        book2 = new Book("Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
+        book2 = new Book(2,"Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
                 "---", "Editoral Libertador", "1859", 500, "789-285-624-843-6");
 
-        user1 = new User("gabriel","123456" , "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
-        user2 = new User("TestUsername","1234" , "Gabriela", LocalDate.of(2005, 10, 15));
+        user1 = new User(1,"gabriel","123456" , "Gabriel Fernandez", LocalDate.of(2000, 01, 26), new ArrayList<>());
+        user2 = new User(0,"TestUsername","1234" , "Gabriela", LocalDate.of(2005, 10, 15), new ArrayList<>());
 
         try {
             user1.addBook(book2);

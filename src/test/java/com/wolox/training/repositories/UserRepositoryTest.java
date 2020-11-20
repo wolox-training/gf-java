@@ -37,8 +37,21 @@ public class UserRepositoryTest {
 
     @Before
     public void setUp(){
-        testUser = new User("Gaby26","123456", "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
-        testOtherUser = new User("TestUsername","123456", "TestName", LocalDate.of(2001, 10, 15));
+        testUser = new User();
+        testOtherUser = new User();
+
+        testUser.setName("name123");
+        testUser.setUsername("username123");
+        testUser.setPassword("password123");
+        testUser.setBirthdate(LocalDate.of(2000,01,26));
+        testUser.setBooks(new ArrayList<>());
+
+        testOtherUser.setName("name2");
+        testOtherUser.setUsername("username2");
+        testOtherUser.setPassword("password2");
+        testOtherUser.setBirthdate(LocalDate.of(2001,01,26));
+        testOtherUser.setBooks(new ArrayList<>());
+
         testUsers = new ArrayList<>();
         testUsers.add(testUser);
         testUsers.add(testOtherUser);
@@ -55,13 +68,8 @@ public class UserRepositoryTest {
         assertEquals(repositoryList.get(1).getBirthdate(), testUsers.get(1).getBirthdate());
     }
 
-    @Test(expected = ConstraintViolationException.class)
-    public void whenCreateUserWithoutUsername_thenThrowException(){
-        User user = new User(null, "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
-        userRepository.save(user);
-    }
 
-    @Test
+   @Test
     public void whenSaveUser_thenReturnUser(){
         User repositoryUser = userRepository.save(testUser);
         assertEquals(testUser.getUsername(), repositoryUser.getUsername());
@@ -89,7 +97,7 @@ public class UserRepositoryTest {
     public void whenGetByNameAndDatesBetween_thenReturnAList(){
         LocalDate date1 = LocalDate.of(1900,01,10);
         LocalDate date2 = LocalDate.of(2005,10,10);
-        String nameContains = "Gabriel Fernandez";
+        String nameContains = "name";
         List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(date1, date2, nameContains, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testUser));
@@ -107,7 +115,7 @@ public class UserRepositoryTest {
 
     @Test
     public void whenGetByNameAndDatesBetweenQuery_thenReturnAList(){
-        String nameContains = "el";
+        String nameContains = "me";
         List<User> testList = userRepository.findAllUsersByBirthdateBetweenAndNameContainsIgnoreCase(null, null, nameContains, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testUser));

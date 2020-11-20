@@ -3,6 +3,7 @@ package com.wolox.training.models;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,9 @@ import java.time.LocalDate;
  */
 @Entity
 @ApiModel(description = "Books")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
 
     /**
@@ -96,36 +100,8 @@ public class Book {
     @ApiModelProperty(notes = "The book ISBN")
     private String isbn;
 
-    public Book() {
-
-    }
-
-    public Book(String genre, String author, String image, String title, String subtitle, String publisher, String year, Integer pages, String isbn) {
-        this.genre = genre;
-        this.author = author;
-        this.image = image;
-        this.title = title;
-        this.subtitle = subtitle;
-        this.publisher = publisher;
-        this.year = year;
-        this.pages = pages;
-        this.isbn = isbn;
-    }
-
-    public long getId(){
-        return this.id;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
     public void setGenre(String genre) {
         this.genre = genre;
-    }
-
-    public String getAuthor() {
-        return author;
     }
 
     public void setAuthor(String author) {
@@ -133,17 +109,9 @@ public class Book {
         this.author = author;
     }
 
-    public String getImage() {
-        return image;
-    }
-
     public void setImage(String image) {
         Preconditions.checkNotNull(image, "The image path can not be null");
         this.image = image;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
@@ -151,26 +119,14 @@ public class Book {
         this.title = title;
     }
 
-    public String getSubtitle() {
-        return subtitle;
-    }
-
     public void setSubtitle(String subtitle) {
         Preconditions.checkNotNull(subtitle, "The subtitle can not be null");
         this.subtitle = subtitle;
     }
 
-    public String getPublisher() {
-        return publisher;
-    }
-
     public void setPublisher(String publisher) {
         Preconditions.checkNotNull(publisher, "The publisher can not be null");
         this.publisher = publisher;
-    }
-
-    public String getYear() {
-        return year;
     }
 
     public void setYear(String year) {
@@ -180,18 +136,10 @@ public class Book {
         this.year = year;
     }
 
-    public Integer getPages() {
-        return pages;
-    }
-
     public void setPages(Integer pages) {
         Preconditions.checkNotNull(pages, "The number of pages can not be null");
         Preconditions.checkArgument(pages > 0, "The number of pages must be greater than 0");
         this.pages = pages;
-    }
-
-    public String getIsbn() {
-        return isbn;
     }
 
     public void setIsbn(String isbn) {

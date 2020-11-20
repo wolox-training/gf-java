@@ -37,10 +37,29 @@ public class BookRepositoryTest {
 
     @Before
     public void setUp(){
-        testBook = new Book("Philosophy", "Tres Iniciados", "image123.jpg", "El Kybalion",
-                "---", "Editorial Pluma y Papel", "1859", 200, "978-987-684-143-4");
-        testOtherBook = new Book("Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
-                "---", "Editoral Libertador", "1859", 500, "789-285-624-843-6");
+        testBook = new Book();
+        testOtherBook = new Book();
+
+        testBook.setImage("image");
+        testBook.setPublisher("pub");
+        testBook.setAuthor("author");
+        testBook.setYear("2000");
+        testBook.setPages(200);
+        testBook.setSubtitle("subtitle");
+        testBook.setTitle("title");
+        testBook.setIsbn("123456789");
+        testBook.setGenre("genre");
+
+        testOtherBook.setImage("image2");
+        testOtherBook.setPublisher("pub2");
+        testOtherBook.setAuthor("author2");
+        testOtherBook.setYear("2000");
+        testOtherBook.setPages(200);
+        testOtherBook.setSubtitle("subtitle2");
+        testOtherBook.setTitle("title2");
+        testOtherBook.setIsbn("987654321");
+        testOtherBook.setGenre("genre2");
+
         testBooks = new ArrayList<>();
         testBooks.add(testBook);
         testBooks.add(testOtherBook);
@@ -57,12 +76,6 @@ public class BookRepositoryTest {
         assertEquals(repositoryList.get(1).getIsbn(), testBooks.get(1).getIsbn());
     }
 
-    @Test(expected = ConstraintViolationException.class)
-    public void whenCreateBookWithoutAuthor_thenThrowException(){
-        Book book = new Book("Philosophy", null, "image123.jpg", "El Kybalion",
-                "---", "Editorial Pluma y Papel", "1908", 200, "978-987-684-143-4");
-        bookRepository.save(book);
-    }
 
     @Test
     public void whenSaveBook_thenReturnBook(){
@@ -90,9 +103,9 @@ public class BookRepositoryTest {
 
     @Test
     public void whenGetBookByPubGenYear_thenReturnAList(){
-        String publisher = "Editoral Libertador";
-        String genre = "Science";
-        String year = "1859";
+        String publisher = "pub2";
+        String genre = "genre2";
+        String year = "2000";
         List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, genre, year, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testOtherBook));
@@ -109,8 +122,8 @@ public class BookRepositoryTest {
 
     @Test
     public void whenGetBookByPubGenYearQuery_thenReturnAList(){
-        String publisher = "Editoral Libertador";
-        String year = "1859";
+        String publisher = "pub2";
+        String year = "2000";
         List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, null, null, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testOtherBook));
@@ -118,8 +131,8 @@ public class BookRepositoryTest {
 
     @Test
     public void whenGetAllBooksWhitFilters_thenReturnAList(){
-        String publisher = "Editoral Libertador";
-        String year = "1859";
+        String publisher = "pub2";
+        String year = "2000";
         List<Book> testList = bookRepository.findAll(null, null, null, null, null, publisher, year, null, null, null);
         assertFalse(testList.isEmpty());
         assertTrue(testList.contains(testOtherBook));
@@ -127,7 +140,7 @@ public class BookRepositoryTest {
 
     @Test
     public void whenGetAllBooksWhitFiltersAndPagingSorting_thenReturnAList(){
-        String year = "1859";
+        String year = "2000";
         List<Book> testList = bookRepository.findAll(null, null, null, null, null, null, year, null, null, PageRequest.of(0,2, Sort.by("title")));
         assertFalse(testList.isEmpty());
         assertEquals(testBook.getTitle(), testList.get(0).getTitle());
