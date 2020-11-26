@@ -105,5 +105,14 @@ public class BookRepositoryTest {
         assertTrue(testList.isEmpty());
     }
 
+    @Test
+    public void whenGetBookByPubGenYearQuery_thenReturnAList(){
+        String publisher = "Editoral Libertador";
+        String year = "1859";
+        List<Book> testList = bookRepository.findAllByPublisherAndGenreAndYear(publisher, null, null);
+        assertFalse(testList.isEmpty());
+        assertTrue(testList.contains(testOtherBook));
+    }
+
 
 }
