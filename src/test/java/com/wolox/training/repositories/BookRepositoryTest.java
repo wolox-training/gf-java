@@ -114,5 +114,14 @@ public class BookRepositoryTest {
         assertTrue(testList.contains(testOtherBook));
     }
 
+    @Test
+    public void whenGetAllBooksWhitFilters_thenReturnAList(){
+        String publisher = "Editoral Libertador";
+        String year = "1859";
+        List<Book> testList = bookRepository.findAll(null, null, null, null, null, publisher, year, null, null);
+        assertFalse(testList.isEmpty());
+        assertTrue(testList.contains(testOtherBook));
+    }
+
 
 }
