@@ -8,11 +8,10 @@ import com.wolox.training.repositories.UserRepository;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -115,6 +114,12 @@ public class UserController {
         Book book = bookRepository.findById(bookId).orElseThrow(BookNotFoundException::new);
         user.removeBook(book);
         return userRepository.save(user);
+    }
+
+    @GetMapping("/username")
+    public User getCurrentUser(Principal principal) throws UserNotFoundException {
+        User user = userRepository.findByUsername(principal.getName()).orElseThrow(UserNotFoundException::new);
+        return user;
     }
 
     @PutMapping("/{id}/newPassword")

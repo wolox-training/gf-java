@@ -67,7 +67,7 @@ public class UserControllerTest {
         book2 = new Book("Science", "Charles Darwin", "image234.jpg", "On the Origin of Species",
                 "---", "Editoral Libertador", "1859", 500, "789-285-624-843-6");
 
-        user1 = new User("Gaby26","1234" , "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
+        user1 = new User("gabriel","123456" , "Gabriel Fernandez", LocalDate.of(2000, 01, 26));
         user2 = new User("TestUsername","1234" , "TestName", LocalDate.of(2005, 10, 15));
 
         try {
@@ -90,6 +90,7 @@ public class UserControllerTest {
         given(userRepository.findById(0L)).willReturn(java.util.Optional.of(user2));
         given(bookRepository.findById(1L)).willReturn(java.util.Optional.of(book1));
         given(bookRepository.findById(2L)).willReturn(java.util.Optional.of(book2));
+        given(userRepository.findByUsername("gabriel")).willReturn(java.util.Optional.ofNullable(user1));
     }
 
     @WithMockUser(username = "gabriel", password = "123456")
@@ -238,5 +239,15 @@ public class UserControllerTest {
     public void whenNotAuthenticated_thenReturnStatus401() throws Exception {
         mvc.perform(get(url + "/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(username = "gabriel", password = "123456")
+    @Test
+    public void whenGetCurrentUsername_thenReturnCurrentUser() throws Exception {
+        mvc.perform(get(url + "/username").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username", is(user1.getUsername())))
+                .andExpect(jsonPath("$.name", is(user1.getName())))
+                .andExpect(jsonPath("$.birthdate", is(user1.getBirthdate().toString())));
     }
 }
